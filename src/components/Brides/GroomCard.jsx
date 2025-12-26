@@ -317,7 +317,7 @@
 //   return (
 //     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 w-full max-w-3xl mx-auto">
 
-//       {/* ✅ IMAGE */}
+//       {/*  IMAGE */}
 //       <div className="relative md:w-1/3 w-full">
 //         <img
 //           src={getProfileImageSrc()}
@@ -437,7 +437,7 @@ const GroomCard = ({ profile }) => {
   const inches = Math.round(heightInInches % 12);
   const heightText = height ? `${ft}'${inches}"` : "";
 
-  // ✅ SAFE IMAGE RESOLUTION (NO RERENDER, NO LOOP)
+  // SAFE IMAGE RESOLUTION (NO RERENDER, NO LOOP)
   const profileImageSrc = useMemo(() => {
     if (
       hasProfilePhoto === true &&
@@ -468,7 +468,7 @@ const GroomCard = ({ profile }) => {
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 w-full max-w-3xl mx-auto">
 
-      {/* ✅ IMAGE (DEPLOYMENT SAFE) */}
+      {/* IMAGE (DEPLOYMENT SAFE) */}
       <div className="relative md:w-1/3 w-full">
         <img
           src={profileImageSrc}
@@ -476,7 +476,7 @@ const GroomCard = ({ profile }) => {
           className="w-full h-60 object-cover"
           loading="lazy"
           onError={(e) => {
-            // 🔒 CRITICAL: stop infinite loop
+            // CRITICAL: stop infinite loop
             e.currentTarget.onerror = null;
             e.currentTarget.src = defaultProfileImg;
           }}

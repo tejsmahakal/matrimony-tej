@@ -178,7 +178,7 @@ const Step3EducationDetails = ({
         );
         setTimeout(() => setSuccessMessage(""), 3000);
       } else if (educationError.status === 401 || educationError.status === 403) {
-        setErrorMessage("Session expired. Please login again.");
+        // setErrorMessage("Session expired. Please login again.");
         setDataLoaded(true);
       } else {
         console.error("Unexpected error:", educationError);

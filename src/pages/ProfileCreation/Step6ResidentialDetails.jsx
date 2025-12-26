@@ -256,11 +256,11 @@ const Step6ResidentialDetails = ({
         setSuccessMessage("No existing contact details found. Please create new ones.");
         setTimeout(() => setSuccessMessage(""), 3000);
       } else if (residentialError.status === 401 || residentialError.status === 403) {
-        setApiError("Session expired. Please login again.");
+        // setApiError("Session expired. Please login again.");
         setDataLoaded(true);
       } else {
         console.error("Unexpected error:", residentialError);
-        setApiError("Failed to load contact details");
+        // setApiError("Failed to load contact details");
         setDataLoaded(true);
       }
     }

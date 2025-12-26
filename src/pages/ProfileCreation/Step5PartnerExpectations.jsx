@@ -128,7 +128,7 @@ const Step5PartnerExpectations = ({
         setDataLoaded(true);
         setSuccessMessage("No existing partner preferences found. Please create new ones.");
       } else {
-        setErrorMessage("Failed to load partner preferences. Please try again.");
+        // setErrorMessage("Failed to load partner preferences. Please try again.");
       }
       setDataLoaded(true);
     }

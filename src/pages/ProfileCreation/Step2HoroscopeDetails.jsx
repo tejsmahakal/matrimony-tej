@@ -130,7 +130,7 @@ const Step2HoroscopeDetails = ({
       console.log("Horoscope fetch error:", horoscopeError);
       
       if (horoscopeError.status === 401 || horoscopeError.status === 403) {
-  setErrorMessage("Session expired. Please login again.");
+  // setErrorMessage("Session expired. Please login again.");
   setDataLoaded(true);
 } else {
         // setErrorMessage("Failed to load horoscope data");
@@ -360,7 +360,7 @@ const Step2HoroscopeDetails = ({
       } else if (error.status === 400) {
         errorMsg = "Invalid data. Please check all fields are correct.";
       } else if (error.status === 401 || error.status === 403) {
-        errorMsg = "Session expired. Please login again.";
+        // errorMsg = "Session expired. Please login again.";
         localStorage.removeItem("token");
         setTimeout(() => {
           window.location.href = "/signin";

@@ -127,7 +127,7 @@ const Step4FamilyBackground = ({
         );
         setTimeout(() => setSuccessMessage(""), 3000);
       } else if (familyError.status === 401 || familyError.status === 403) {
-        setErrorMessage("Session expired. Please login again.");
+        // setErrorMessage("Session expired. Please login again.");
         setDataLoaded(true);
       } else {
         console.error("Unexpected error:", familyError);

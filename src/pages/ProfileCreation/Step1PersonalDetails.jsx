@@ -152,7 +152,7 @@ const Step1PersonalDetails = ({
         setSuccessMessage("No existing profile found. Please create a new one.");
         setTimeout(() => setSuccessMessage(""), 3000);
       } else if (profileError.status === 401 || profileError.status === 403) {
-        setErrorMessage("Session expired. Please login again.");
+        // setErrorMessage("Session expired. Please login again.");
         setDataLoaded(true);
       } else {
         console.error("Unexpected error:", profileError);

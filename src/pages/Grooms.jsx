@@ -1,130 +1,44 @@
-// import React, { useState } from "react";
-// import ProfileCard from "../components/Brides/GroomCard";
-// import { Menu, X } from "lucide-react";
-// import { useGetGroomsQuery } from "../context/profileApi";
-
-// /* --------------------------------
-//    MAP GROOM BACKEND → CARD DATA
-// --------------------------------- */
-// const mapGroomToCard = (groom) => {
-//   const convertHeight = (value) => {
-//     if (value === null || value === undefined) return "";
-//     const feet = Math.floor(value);
-//     const inches = Math.round((value - feet) * 12);
-//     return `${feet}'${String(inches).padStart(2, "0")}"`;
-//   };
-
-//   const formatBirthDate = (dob) => {
-//     if (!dob) return "";
-//     const [y, m, d] = dob.split("T")[0].split("-");
-//     return `${d}-${m}-${y}`;
-//   };
-
-//   return {
-//     id: groom.userId,
-
-//     // SAME STRUCTURE AS BRIDES
-//     firstName: groom.firstName || "",
-//     lastName: groom.lastName || "",
-
-//     birthDate: formatBirthDate(groom.dateOfBirth),
-//     height: convertHeight(groom.height),
-//     education: groom.education ?? "Not Available",
-//     occupation: groom.occupation ?? "Not Available",
-//     city: groom.city ?? "Not Available",
-//     caste: groom.caste ?? "Not Available",
-//     image: groom.profilePhoto?.[0] || "/default-avatar.jpg",
-//   };
-// };
-
-// const Groom = () => {
-//   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-//   const { data, isLoading, isError } = useGetGroomsQuery({
-//     page: 0,
-//     size: 10,
-//   });
-
-//   // FIXED (same as Brides.jsx)
-//   const grooms = data?.list || [];
-//   const profiles = grooms.map(mapGroomToCard);
-
-//   return (
-//     <div className="flex min-h-screen bg-white">
-
-//       {/* MOBILE MENU BUTTON */}
-//       <button
-//         className="md:hidden fixed top-20 left-4 z-[41] bg-white p-2 rounded-full shadow"
-//         onClick={() => setSidebarOpen(!sidebarOpen)}
-//       >
-//         {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-//       </button>
-
-//       <section className="flex-1 p-4 md:p-6 mt-5 overflow-y-auto h-[calc(100vh-80px)]">
-//         <div className="max-w-4xl mx-auto space-y-6">
-
-//           {/* LOADING */}
-//           {isLoading && (
-//             <p className="text-center text-gray-500">
-//               Loading groom profiles...
-//             </p>
-//           )}
-
-//           {/* ERROR */}
-//           {isError && (
-//             <p className="text-center text-red-500">
-//               Failed to load groom profiles.
-//             </p>
-//           )}
-
-//           {/* EMPTY */}
-//           {!isLoading && profiles.length === 0 && (
-//             <p className="text-center text-gray-600">
-//               No groom profiles found.
-//             </p>
-//           )}
-
-//           {/* PROFILE CARDS */}
-//           {profiles.map((profile) => (
-//             <ProfileCard key={profile.id} profile={profile} />
-//           ))}
-
-//         </div>
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default Groom;
-
-
-
-
-
-
-
-
-
-// import React, { useState } from "react";
+// import React, { useState, useEffect } from "react";
 // import ProfileCard from "../components/Brides/GroomCard";
 // import { Menu, X } from "lucide-react";
 // import { useBrowseProfilesByGenderQuery } from "../context/profileApi";
 
 // const Groom = () => {
 //   const [sidebarOpen, setSidebarOpen] = useState(false);
+//   const [page, setPage] = useState(0);
+//   const [allUsers, setAllUsers] = useState([]);
 
-//   const { data, isLoading, isError } = useBrowseProfilesByGenderQuery({
-//     gender: "MALE",
-//     page: 0,
-//     size: 10,
-//   });
+//   const {
+//     data,
+//     isLoading,
+//     isFetching,
+//     isError,
+//   } = useBrowseProfilesByGenderQuery(
+//     { gender: "MALE", page, size: 10 },
+//     {
+//       refetchOnMountOrArgChange: false,
+//       refetchOnFocus: false,
+//       refetchOnReconnect: false,
+//     }
+//   );
 
-//   // CORRECT RESPONSE PATH
 //   const users = data?.data?.content || [];
+//   const isLastPage = data?.data?.last === true;
+
+//   useEffect(() => {
+//     if (users.length > 0) {
+//       setAllUsers((prev) => {
+//         const ids = new Set(prev.map((u) => u.userProfileId));
+//         const filtered = users.filter(
+//           (u) => !ids.has(u.userProfileId)
+//         );
+//         return [...prev, ...filtered];
+//       });
+//     }
+//   }, [users]);
 
 //   return (
 //     <div className="flex min-h-screen bg-white">
-//       {/* MOBILE MENU BUTTON */}
 //       <button
 //         className="md:hidden fixed top-20 left-4 z-[41] bg-white p-2 rounded-full shadow"
 //         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -134,31 +48,44 @@
 
 //       <section className="flex-1 p-4 md:p-6 mt-5 overflow-y-auto h-[calc(100vh-80px)]">
 //         <div className="max-w-4xl mx-auto space-y-6">
+
 //           {isLoading && (
 //             <p className="text-center text-gray-500">
-//               Loading grooms...
+//               Loading grooms…
 //             </p>
 //           )}
 
 //           {isError && (
 //             <p className="text-center text-red-500">
-//               Failed to load grooms.
+//               Unable to load grooms right now.
 //             </p>
 //           )}
 
-//           {!isLoading && users.length === 0 && (
+//           {!isLoading && allUsers.length === 0 && (
 //             <p className="text-center text-gray-600">
 //               No grooms found.
 //             </p>
 //           )}
 
-//           {/* PASS PROFILE OBJECT */}
-//           {users.map((profile) => (
+//           {allUsers.map((profile) => (
 //             <ProfileCard
 //               key={profile.userProfileId}
 //               profile={profile}
 //             />
 //           ))}
+
+//           {!isLoading && !isLastPage && (
+//             <div className="text-center">
+//               <button
+//                 onClick={() => setPage((p) => p + 1)}
+//                 disabled={isFetching}
+//                 className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600"
+//               >
+//                 {isFetching ? "Loading..." : "Load More"}
+//               </button>
+//             </div>
+//           )}
+
 //         </div>
 //       </section>
 //     </div>
@@ -171,29 +98,48 @@
 
 
 
-
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProfileCard from "../components/Brides/GroomCard";
 import { Menu, X } from "lucide-react";
 import { useBrowseProfilesByGenderQuery } from "../context/profileApi";
 
 const Groom = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [allUsers, setAllUsers] = useState([]);
 
-  // 🔹 Browse male profiles
-  const { data, isLoading, isError } = useBrowseProfilesByGenderQuery({
-    gender: "MALE",
-    page: 0,
-    size: 10,
-  });
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isError,
+  } = useBrowseProfilesByGenderQuery(
+    { gender: "MALE", page, size: 10 },
+    {
+      refetchOnMountOrArgChange: false,
+      refetchOnFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
 
-  // CORRECT RESPONSE PATH
   const users = data?.data?.content || [];
+  const isLastPage = data?.data?.last === true;
+
+  useEffect(() => {
+    if (users.length > 0) {
+      setAllUsers((prev) => {
+        const ids = new Set(prev.map((u) => u.userProfileId));
+        const filtered = users.filter(
+          (u) => !ids.has(u.userProfileId)
+        );
+        return [...prev, ...filtered];
+      });
+    }
+  }, [users]);
 
   return (
     <div className="flex min-h-screen bg-white">
-      {/* MOBILE MENU BUTTON */}
+      {/* MOBILE MENU */}
       <button
         className="md:hidden fixed top-20 left-4 z-[41] bg-white p-2 rounded-full shadow"
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -201,33 +147,52 @@ const Groom = () => {
         {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      <section className="flex-1 p-4 md:p-6 mt-5 overflow-y-auto h-[calc(100vh-80px)]">
+      {/* SINGLE PAGE SCROLL */}
+      <section className="flex-1 p-4 md:p-6 mt-5">
         <div className="max-w-4xl mx-auto space-y-6">
-          {isLoading && (
+
+          {/* INITIAL LOADING */}
+          {isLoading && page === 0 && (
             <p className="text-center text-gray-500">
-              Loading grooms...
+              Loading grooms…
             </p>
           )}
 
+          {/* ERROR */}
           {isError && (
             <p className="text-center text-red-500">
-              Failed to load grooms.
+              Unable to load grooms right now.
             </p>
           )}
 
-          {!isLoading && users.length === 0 && (
+          {/* EMPTY */}
+          {!isLoading && allUsers.length === 0 && (
             <p className="text-center text-gray-600">
               No grooms found.
             </p>
           )}
 
-          {/* PASS PROFILE OBJECT */}
-          {users.map((profile) => (
+          {/* CARDS */}
+          {allUsers.map((profile) => (
             <ProfileCard
               key={profile.userProfileId}
               profile={profile}
             />
           ))}
+
+          {/* LOAD MORE */}
+          {!isLoading && !isLastPage && (
+            <div className="text-center">
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={isFetching}
+                className="bg-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-600 disabled:opacity-60"
+              >
+                {isFetching ? "Loading..." : "Load More"}
+              </button>
+            </div>
+          )}
+
         </div>
       </section>
     </div>
